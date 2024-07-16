@@ -1,0 +1,58 @@
+.app {
+  display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  font-size: xxx-large;
+  font-weight: bold;
+}
+
+main {
+  padding-right: 2%;
+  padding-left: 2%;
+  flex: 1;
+}
+
+.rdm {
+  padding-top: 1%;
+  padding-bottom: 1%;
+  font-size: x-large;
+}
+
+.block {
+  display: flex;
+  padding-top: 1%;
+}
+
+.button {
+  margin: 3px;
+}
+
+ul li {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 1%;
+}
+
+.hydraSize {
+  cursor: pointer;
+  width: 70%;
+  height: 14px;
+}
+
+.hydra {
+  padding-bottom: 2%;
+}
+
+.sketchCanvas {
+  overflow: auto;
+}
+
+footer {
+  padding-right: 2%;
+  padding-left: 2%;
+  background-color: rgb(175, 253, 214);
+}
