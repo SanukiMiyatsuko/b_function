@@ -91,20 +91,25 @@ export function less_than(s: T, t: T): boolean {
 }
 
 // dom(t)
-export function dom(t: T): ZT | PT {
-    if (t.type === "zero") {
+export function dom(s: T): ZT | PT {
+    if (s.type === "zero") {
         return Z;
-    } else if (t.type === "plus") {
-        return dom(t.add[t.add.length - 1]);
+    } else if (s.type === "plus") {
+        return dom(s.add[s.add.length - 1]);
     } else { // t.type === "psi"
-        const b = t.arg;
+        const b = s.arg;
         const domb = dom(b);
         if (domb.type === "zero") {
-            const doma = dom(t.sub);
-            if (doma.type === "zero" || equal(doma, ONE)) {
-                return t;
+            const a = s.sub;
+            if (a.type === "zero") {
+                return s;
+            } else if (a.type === "psi") {
+                if (equal(a, ONE)) return s;
+                if (equal(a, OMEGA)) return OMEGA;
+                throw Error("未定義");
             } else {
-                return doma;
+                if (a.add.every(x => equal(x, ONE))) return s;
+                throw Error("未定義");
             }
         } else if (equal(domb, ONE)) {
             return OMEGA;
@@ -112,16 +117,11 @@ export function dom(t: T): ZT | PT {
             return OMEGA;
         } else {
             const d = domb.arg;
-            const domd = dom(d);
-            if (domd.type === "zero") {
-                return t;
-            } else {
-                if (less_than(b, d)) {
-                    return OMEGA;
-                } else {
-                    return domb;
-                }
+            if (d.type === "zero") {
+                if (less_than(domb, s)) return domb;
+                return s;
             }
+            return OMEGA;
         }
     }
 }
@@ -166,11 +166,16 @@ export function fund(s: T, t: T): T {
         const b = s.arg;
         const domb = dom(b);
         if (domb.type === "zero") {
-            const doma = dom(a);
-            if (equal(doma, Z) || equal(doma, ONE)) {
-                return t;
+            const a = s.sub;
+            if (a.type === "zero") {
+                return Z;
+            } else if (a.type === "psi") {
+                if (equal(a, ONE)) return t;
+                if (equal(a, OMEGA)) return psi(fund(a, t), b);
+                throw Error("未定義");
             } else {
-                return psi(fund(a, t), b);
+                if (a.add.every(x => equal(x, ONE))) return t;
+                throw Error("未定義");
             }
         } else if (equal(domb, ONE)) {
             if (less_than(t, OMEGA) && equal(dom(t), ONE)) {
@@ -183,7 +188,7 @@ export function fund(s: T, t: T): T {
         } else {
             const d = domb.arg;
             const domd = dom(d);
-            if (domd.type === "zero" || less_than(d, b) || equal(d, b)) {
+            if (domd.type === "zero") {
                 return psi(a, fund(b, t));
             } else {
                 const e = domd.sub;
